@@ -108,6 +108,31 @@
     .footer-text a:hover {
         text-decoration: underline;
     }
+     .toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #4CAF50;
+    color: #fff;
+    padding: 14px 18px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: 0.3s ease;
+    z-index: 9999;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.hidden {
+    display: none;
+}
 </style>
 </head>
 
@@ -162,14 +187,28 @@ document.getElementById('registerForm').addEventListener('submit', function (e) 
         alert('Username đã tồn tại');
         return;
     }
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.remove('hidden');
 
+    setTimeout(() => toast.classList.add('show'), 10);
+
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.classList.add('hidden'), 300);
+    }, 1500);
+}
     users.push({ username, email, password });
     localStorage.setItem('users', JSON.stringify(users));
 
-    alert('Đăng ký thành công! Vui lòng đăng nhập');
-    window.location.href = 'loginAccount.html';
+   showToast('Đăng ký thành công!');
+   setTimeout(() => {
+       window.location.href = 'loginAccount.html';
+   }, 1300);
 });
-</script>
 
+</script>
+<div id="toast" class="toast hidden">Đăng ký thành công!</div>
 </body>
 </html>

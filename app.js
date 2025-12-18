@@ -123,6 +123,7 @@ function initApp() {
     setupEventListeners();
     updateAllStats();
     userAccount();
+    helloUser();
 }
 
 // Data Management
@@ -164,8 +165,7 @@ function userAccount() {
 
     menuLogout.onclick = () => {
         localStorage.removeItem('user');
-        alert('Đã đăng xuất');
-        updateMenuByAuth();
+       window.location.href = 'loginAccount.html';
     };
 
     function updateMenuByAuth() {
@@ -184,7 +184,15 @@ function userAccount() {
         }
     }
 }
-
+function helloUser(){
+    const user = JSON.parse(localStorage.getItem('user'));
+    const navUsername = document.getElementById('nav-username');
+    if (user) {
+        navUsername.textContent = user.username;
+    } else {
+        navUsername.textContent = 'Guest';
+    }
+}
 
 function saveData() {
     localStorage.setItem('vocabLearnerData', JSON.stringify(appData));

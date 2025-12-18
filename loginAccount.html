@@ -108,9 +108,35 @@
     .footer-text a:hover {
         text-decoration: underline;
     }
+    .toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #4CAF50;
+    color: #fff;
+    padding: 14px 18px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: 0.3s ease;
+    z-index: 9999;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.hidden {
+    display: none;
+}
+
 </style>
 </head>
-
+<div id="toast" class="toast hidden">Đăng nhập thành công!</div>
 <body>
 
 <div class="login-card">
@@ -154,10 +180,26 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
         alert('Sai username hoặc password');
         return;
     }
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.remove('hidden');
 
-    localStorage.setItem('user', JSON.stringify(user));
-    alert('Đăng nhập thành công');
+    setTimeout(() => toast.classList.add('show'), 10);
+
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.classList.add('hidden'), 300);
+    }, 1500);
+}
+
+ localStorage.setItem('user', JSON.stringify(user));
+showToast('Đăng nhập thành công!');
+
+setTimeout(() => {
     window.location.href = 'index.html';
+}, 1300);
+
 });
 </script>
 
