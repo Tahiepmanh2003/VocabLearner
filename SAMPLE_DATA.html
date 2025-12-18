@@ -1,0 +1,100 @@
+<!-- 
+    SAMPLE DATA - Để kiểm tra VocabLearner
+    Dán code này vào console (F12) để tạo dữ liệu mẫu
+-->
+
+<script>
+// Sample Data for Testing
+const sampleData = {
+    passages: [
+        {
+            id: "1702920000000",
+            text: "Modern manufacturing is the process of transforming raw materials into finished goods using advanced technology and automation systems. Software algorithms control machinery and ensure quality assurance throughout the production line. The integration of IoT devices enables real-time monitoring and optimization of manufacturing processes.",
+            topic: "Technology & Manufacturing",
+            difficulty: "medium",
+            language: "en",
+            dateAdded: "18/12/2024",
+            wordCount: 60
+        },
+        {
+            id: "1702920001000",
+            text: "Cloud computing provides on-demand access to computing resources and storage via the internet. It uses distributed servers and database systems to ensure security and reliability. Machine learning algorithms process large data sets for business intelligence and optimization.",
+            topic: "Cloud Computing",
+            difficulty: "hard",
+            language: "en",
+            dateAdded: "18/12/2024",
+            wordCount: 45
+        },
+        {
+            id: "1702920002000",
+            text: "现代 (xiàndài) 工厂 (gōngchǎng) 使用 (shǐyòng) 机器人 (jīqìrén) 和 (hé) 自动化 (zìdònghuà) 系统 (xìtǒng) 来改进 (lái gǎijìn) 生产 (shēngchǎn) 效率 (xiàolǜ)。品质 (pǐnzhì) 控制 (kòngzhì) 是 (shì) 制造 (zhìzào) 的 (de) 关键 (guānjiàn) 步骤 (bùzhòu)。",
+            topic: "工业自动化",
+            difficulty: "medium",
+            language: "zh",
+            dateAdded: "18/12/2024",
+            wordCount: 35
+        }
+    ],
+    vocabulary: [
+        { id: "v1", word: "manufacturing", language: "en", meaning: "sản xuất", passageId: "1702920000000", category: "Technology", difficulty: "medium", dateAdded: "18/12/2024", pinyin: "", frequency: 1 },
+        { id: "v2", word: "technology", language: "en", meaning: "công nghệ", passageId: "1702920000000", category: "Technology", difficulty: "medium", dateAdded: "18/12/2024", pinyin: "", frequency: 2 },
+        { id: "v3", word: "automation", language: "en", meaning: "tự động hóa", passageId: "1702920000000", category: "Technology", difficulty: "medium", dateAdded: "18/12/2024", pinyin: "", frequency: 1 },
+        { id: "v4", word: "machinery", language: "en", meaning: "máy móc", passageId: "1702920000000", category: "Manufacturing", difficulty: "medium", dateAdded: "18/12/2024", pinyin: "", frequency: 1 },
+        { id: "v5", word: "algorithm", language: "en", meaning: "thuật toán", passageId: "1702920000000", category: "Technology", difficulty: "hard", dateAdded: "18/12/2024", pinyin: "", frequency: 1 },
+        { id: "v6", word: "optimization", language: "en", meaning: "tối ưu hóa", passageId: "1702920000000", category: "Technology", difficulty: "hard", dateAdded: "18/12/2024", pinyin: "", frequency: 1 },
+        { id: "v7", word: "quality", language: "en", meaning: "chất lượng", passageId: "1702920000000", category: "Manufacturing", difficulty: "easy", dateAdded: "18/12/2024", pinyin: "", frequency: 1 },
+        
+        { id: "v8", word: "cloud", language: "en", meaning: "đám mây", passageId: "1702920001000", category: "Cloud Computing", difficulty: "medium", dateAdded: "18/12/2024", pinyin: "", frequency: 1 },
+        { id: "v9", word: "computing", language: "en", meaning: "điện toán", passageId: "1702920001000", category: "Cloud Computing", difficulty: "medium", dateAdded: "18/12/2024", pinyin: "", frequency: 1 },
+        { id: "v10", word: "security", language: "en", meaning: "bảo mật", passageId: "1702920001000", category: "Technology", difficulty: "medium", dateAdded: "18/12/2024", pinyin: "", frequency: 1 },
+        { id: "v11", word: "database", language: "en", meaning: "cơ sở dữ liệu", passageId: "1702920001000", category: "Technology", difficulty: "hard", dateAdded: "18/12/2024", pinyin: "", frequency: 1 },
+        
+        { id: "v12", word: "工厂", language: "zh", meaning: "nhà máy", passageId: "1702920002000", category: "Manufacturing", difficulty: "easy", dateAdded: "18/12/2024", pinyin: "gōngchǎng", frequency: 1 },
+        { id: "v13", word: "机器人", language: "zh", meaning: "robot", passageId: "1702920002000", category: "Technology", difficulty: "medium", dateAdded: "18/12/2024", pinyin: "jīqìrén", frequency: 1 },
+        { id: "v14", word: "自动化", language: "zh", meaning: "tự động hóa", passageId: "1702920002000", category: "Technology", difficulty: "medium", dateAdded: "18/12/2024", pinyin: "zìdònghuà", frequency: 1 },
+        { id: "v15", word: "生产", language: "zh", meaning: "sản xuất", passageId: "1702920002000", category: "Manufacturing", difficulty: "easy", dateAdded: "18/12/2024", pinyin: "shēngchǎn", frequency: 1 },
+        { id: "v16", word: "效率", language: "zh", meaning: "hiệu suất", passageId: "1702920002000", category: "Manufacturing", difficulty: "medium", dateAdded: "18/12/2024", pinyin: "xiàolǜ", frequency: 1 },
+        { id: "v17", word: "品质", language: "zh", meaning: "chất lượng", passageId: "1702920002000", category: "Manufacturing", difficulty: "medium", dateAdded: "18/12/2024", pinyin: "pǐnzhì", frequency: 1 },
+    ],
+    userProgress: {
+        "v1": { learned: true, lastReview: "18/12/2024", reviewCount: 3 },
+        "v2": { learned: true, lastReview: "18/12/2024", reviewCount: 2 },
+        "v3": { learned: false, lastReview: "18/12/2024", reviewCount: 1 },
+        "v4": { learned: true, lastReview: "17/12/2024", reviewCount: 2 },
+        "v5": { learned: false, lastReview: null, reviewCount: 0 },
+        "v6": { learned: false, lastReview: null, reviewCount: 0 },
+        "v7": { learned: true, lastReview: "18/12/2024", reviewCount: 1 },
+        "v8": { learned: false, lastReview: "18/12/2024", reviewCount: 1 },
+        "v9": { learned: false, lastReview: null, reviewCount: 0 },
+        "v10": { learned: true, lastReview: "18/12/2024", reviewCount: 2 },
+        "v11": { learned: false, lastReview: null, reviewCount: 0 },
+        "v12": { learned: true, lastReview: "18/12/2024", reviewCount: 1 },
+        "v13": { learned: false, lastReview: "18/12/2024", reviewCount: 1 },
+        "v14": { learned: false, lastReview: null, reviewCount: 0 },
+        "v15": { learned: true, lastReview: "18/12/2024", reviewCount: 2 },
+        "v16": { learned: false, lastReview: null, reviewCount: 0 },
+        "v17": { learned: false, lastReview: null, reviewCount: 0 },
+    },
+    stats: {
+        totalPoints: 80,
+        streak: 3,
+        lastStudyDate: "18/12/2024"
+    }
+};
+
+// Lưu vào localStorage
+localStorage.setItem('vocabLearnerData', JSON.stringify(sampleData));
+console.log("✅ Dữ liệu mẫu đã được tải! Refresh trang để xem.");
+</script>
+
+<!-- 
+    HƯỚNG DẪN SỬ DỤNG:
+    1. Mở F12 (Developer Tools)
+    2. Vào tab Console
+    3. Dán toàn bộ code này vào console
+    4. Nhấn Enter
+    5. Refresh trang (F5)
+    6. Bạn sẽ thấy dữ liệu mẫu được tải
+    
+    Hoặc: Copy code trong <script> và dán vào console.
+-->

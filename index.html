@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VocabLearner - Học Từ Vựng Thông Minh</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Libraries for Excel/Word file parsing - LOAD FIRST -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://unpkg.com/mammoth@1.6.0/mammoth.browser.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+            padding: 10px 20px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+            border-color: #999;
+        }
+
+        .tab-active {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 10px;
+            height: 8px;
+            transition: width 0.3s ease;
+        }
+
+        .passage-card {
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin: 10px 0;
+            background: #f9f9f9;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .passage-card:hover {
+            background: #f0f0f0;
+            transform: translateX(5px);
+        }
+
+        .vocabulary-item {
+            background: white;
+            border: 2px solid #e0e0e0;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .vocabulary-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .meaning-box {
+            background: linear-gradient(135deg, #f0f4ff 0%, #fff5f7 100%);
+            border-left: 4px solid #667eea;
+            padding: 12px 15px;
+            margin-top: 10px;
+            border-radius: 6px;
+            font-style: italic;
+            color: #555;
+        }
+
+        .pinyin-box {
+            background: #fff9e6;
+            border-left: 4px solid #ff9800;
+            padding: 8px 12px;
+            margin-top: 8px;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #e65100;
+        }
+
+        .language-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .badge-en {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .badge-zh {
+            background: #fce4ec;
+            color: #c2185b;
+        }
+
+        .badge-tech {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .flashcard {
+            perspective: 1000px;
+            width: 100%;
+            height: 300px;
+            cursor: pointer;
+        }
+
+        .flashcard-inner {
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            position: relative;
+        }
+
+        .flashcard.flipped .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            font-size: 24px;
+            font-weight: bold;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .flashcard-back {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            transform: rotateY(180deg);
+        }
+
+        .success-animation {
+            animation: pulse 0.5s ease-in-out;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .stats-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin: 10px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            width: 100%;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: #ddd;
+        }
+
+        .fade-in {
+            animation: fadeInContent 0.3s ease;
+        }
+
+        @keyframes fadeInContent {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            background: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .difficulty-easy { color: #4caf50; }
+        .difficulty-medium { color: #ff9800; }
+        .difficulty-hard { color: #f44336; }
+
+        textarea {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            z-index: 2000;
+            animation: slideInRight 0.3s ease;
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(400px); }
+            to { transform: translateX(0); }
+        }
+
+        .toast.success {
+            border-left: 4px solid #4caf50;
+        }
+
+        .toast.error {
+            border-left: 4px solid #f44336;
+        }
+
+        .toast.info {
+            border-left: 4px solid #2196f3;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-book-open text-3xl" style="color: #667eea;"></i>
+                    <h1 class="text-3xl font-bold text-gray-800">VocabLearner</h1>
+                    <span class="text-gray-500 text-sm">Học từ vựng thông minh</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="stats-box" style="background: white; color: #667eea; padding: 8px 15px; margin: 0;">
+                        <i class="fas fa-star"></i> <span id="totalPoints">0</span> điểm
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container mx-auto px-4 py-8">
+        <!-- Tabs Navigation -->
+        <div class="flex space-x-1 mb-8 bg-white rounded-12 p-2 card">
+            <button class="tab-btn flex-1 py-3 px-4 rounded-8 font-600 transition text-center tab-active" data-tab="home">
+                <i class="fas fa-home"></i> Trang chủ
+            </button>
+            <button class="tab-btn flex-1 py-3 px-4 rounded-8 font-600 transition text-center" data-tab="passages">
+                <i class="fas fa-file-alt"></i> Đoạn văn
+            </button>
+            <button class="tab-btn flex-1 py-3 px-4 rounded-8 font-600 transition text-center" data-tab="vocabulary">
+                <i class="fas fa-list"></i> Từ vựng
+            </button>
+            <button class="tab-btn flex-1 py-3 px-4 rounded-8 font-600 transition text-center" data-tab="flashcards">
+                <i class="fas fa-layer-group"></i> Flashcard
+            </button>
+            <button class="tab-btn flex-1 py-3 px-4 rounded-8 font-600 transition text-center" data-tab="statistics">
+                <i class="fas fa-chart-bar"></i> Thống kê
+            </button>
+        </div>
+
+        <!-- Home Tab -->
+        <div id="home" class="tab-content fade-in">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="stats-box">
+                    <i class="fas fa-file-alt text-4xl mb-3"></i>
+                    <div class="text-3xl font-bold" id="stat-passages">0</div>
+                    <div class="text-sm opacity-90">Đoạn văn</div>
+                </div>
+                <div class="stats-box">
+                    <i class="fas fa-book text-4xl mb-3"></i>
+                    <div class="text-3xl font-bold" id="stat-words">0</div>
+                    <div class="text-sm opacity-90">Từ vựng</div>
+                </div>
+                <div class="stats-box">
+                    <i class="fas fa-check-circle text-4xl mb-3"></i>
+                    <div class="text-3xl font-bold" id="stat-learned">0</div>
+                    <div class="text-sm opacity-90">Đã học</div>
+                </div>
+                <div class="stats-box">
+                    <i class="fas fa-fire text-4xl mb-3"></i>
+                    <div class="text-3xl font-bold" id="stat-streak">0</div>
+                    <div class="text-sm opacity-90">Streak</div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card p-8 mb-8">
+                <h2 class="text-2xl font-bold mb-6 text-gray-800">
+                    <i class="fas fa-bolt text-yellow-500"></i> Tác vụ nhanh
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <button onclick="switchTab('passages')" class="btn-primary text-lg py-4">
+                        <i class="fas fa-plus-circle"></i> Thêm đoạn văn
+                    </button>
+                    <button onclick="switchTab('flashcards')" class="btn-primary text-lg py-4">
+                        <i class="fas fa-play-circle"></i> Ôn tập Flashcard
+                    </button>
+                    <button onclick="switchTab('vocabulary')" class="btn-primary text-lg py-4">
+                        <i class="fas fa-search"></i> Quản lý từ vựng
+                    </button>
+                </div>
+            </div>
+
+            <!-- Welcome Section -->
+            <div class="card p-8">
+                <h2 class="text-2xl font-bold mb-4 text-gray-800">
+                    <i class="fas fa-graduation-cap text-blue-500"></i> Chào mừng!
+                </h2>
+                <p class="text-gray-600 mb-4">
+                    VocabLearner là công cụ học từ vựng thông minh giúp bạn:
+                </p>
+                <ul class="space-y-2 text-gray-600 mb-6">
+                    <li><i class="fas fa-check text-green-500 mr-2"></i> Nhập đoạn văn tiếng Anh, tiếng Trung (với phiên âm)</li>
+                    <li><i class="fas fa-check text-green-500 mr-2"></i> Tự động trích xuất từ vựng và dịch nghĩa</li>
+                    <li><i class="fas fa-check text-green-500 mr-2"></i> Học từng từ qua Flashcard tương tác</li>
+                    <li><i class="fas fa-check text-green-500 mr-2"></i> Theo dõi tiến độ học tập với thống kê chi tiết</li>
+                    <li><i class="fas fa-check text-green-500 mr-2"></i> Ôn tập thông minh dựa trên mức độ khó</li>
+                </ul>
+                <p class="text-sm text-gray-500">
+                    💡 Tip: Bắt đầu bằng cách thêm một đoạn văn tiếng Anh hoặc tiếng Trung để hệ thống tự động trích xuất từ vựng!
+                </p>
+            </div>
+        </div>
+
+        <!-- Passages Tab -->
+        <div id="passages" class="tab-content hidden">
+            <div class="card p-8 mb-8">
+                <h2 class="text-2xl font-bold mb-6 text-gray-800">
+                    <i class="fas fa-plus-circle text-blue-500"></i> Thêm đoạn văn mới
+                </h2>
+
+                <div class="mb-6">
+                    <label class="block text-sm font-600 text-gray-700 mb-3">Chọn ngôn ngữ:</label>
+                    <div class="flex space-x-4 mb-4">
+                        <label class="flex items-center cursor-pointer">
+                            <input type="radio" name="language" value="en" checked class="mr-2">
+                            <span class="language-badge badge-en">English</span>
+                        </label>
+                        <label class="flex items-center cursor-pointer">
+                            <input type="radio" name="language" value="zh" class="mr-2">
+                            <span class="language-badge badge-zh">中文 (Pinyin)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-sm font-600 text-gray-700 mb-3">Chủ đề (tùy chọn):</label>
+                    <input type="text" id="topicInput" placeholder="VD: Công nghệ, Sản xuất, Máy móc..." 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-8">
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-sm font-600 text-gray-700 mb-3">Nhập đoạn văn:</label>
+                    <textarea id="passageInput" rows="8" placeholder="Dán đoạn văn tiếng Anh hoặc tiếng Trung (kèm phiên âm) tại đây..." 
+                              class="w-full px-4 py-3"></textarea>
+                    <p class="text-xs text-gray-500 mt-2">💡 Ví dụ Tiếng Trung: 这是一个 (zhè shì yī ge) 很好的例子 (hěn hǎo de lìzi)</p>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-sm font-600 text-gray-700 mb-3">Mức độ khó:</label>
+                    <select id="difficultyInput" class="w-full px-4 py-3 border border-gray-300 rounded-8">
+                        <option value="easy">Dễ (Beginner)</option>
+                        <option value="medium" selected>Trung bình (Intermediate)</option>
+                        <option value="hard">Khó (Advanced)</option>
+                    </select>
+                </div>
+
+                <button onclick="addPassage()" class="btn-primary w-full py-3 text-lg">
+                    <i class="fas fa-upload"></i> Thêm đoạn văn
+                </button>
+            </div>
+
+            <!-- Import from Word/Excel -->
+            <div class="card p-8 mb-8 bg-green-50 border-2 border-green-200">
+                <h2 class="text-2xl font-bold mb-6 text-gray-800">
+                    <i class="fas fa-file-word text-green-600"></i> Nhập từ File Word/Excel
+                </h2>
+
+                <p class="text-gray-600 mb-4">
+                    📄 File của bạn cần có <strong>3 cột</strong>: <span class="bg-yellow-100 px-2 py-1 rounded">Chữ Hán</span> | <span class="bg-yellow-100 px-2 py-1 rounded">Phiên âm</span> | <span class="bg-yellow-100 px-2 py-1 rounded">Nghĩa</span>
+                </p>
+
+                <div class="mb-4">
+                    <a href="download_sample.html" target="_blank" class="text-blue-600 hover:text-blue-800 text-sm font-600">
+                        📥 Tải File Mẫu Excel (.xlsx)
+                    </a>
+                    <span class="text-gray-400 mx-2">|</span>
+                    <a href="IMPORT_GUIDE.md" target="_blank" class="text-blue-600 hover:text-blue-800 text-sm font-600">
+                        📖 Hướng Dẫn Chi Tiết
+                    </a>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-sm font-600 text-gray-700 mb-3">Chọn file (.xlsx, .xls, .docx):</label>
+                    <input type="file" id="fileInput" accept=".xlsx,.xls,.docx" 
+                           class="w-full px-4 py-3 border border-green-300 rounded-8 cursor-pointer">
+                    <p class="text-xs text-gray-500 mt-2">✅ Hỗ trợ: Excel (XLSX/XLS) hoặc Word (DOCX)</p>
+                </div>
+
+                <button onclick="importVocabularyFromFile()" class="btn-primary w-full py-3 text-lg bg-green-500 hover:bg-green-600">
+                    <i class="fas fa-file-upload"></i> Nhập từ vựng từ file
+                </button>
+            </div>
+
+            <div class="card p-8">
+                <h2 class="text-2xl font-bold mb-6 text-gray-800">
+                    <i class="fas fa-list text-purple-500"></i> Danh sách đoạn văn
+                </h2>
+
+                <div class="search-box mb-6">
+                    <input type="text" id="passageSearch" placeholder="Tìm kiếm đoạn văn...">
+                </div>
+
+                <div id="passagesList"></div>
+            </div>
+        </div>
+
+        <!-- Vocabulary Tab -->
+        <div id="vocabulary" class="tab-content hidden">
+            <div class="card p-8 mb-8">
+                <h2 class="text-2xl font-bold mb-6 text-gray-800">
+                    <i class="fas fa-book text-green-500"></i> Quản lý từ vựng
+                </h2>
+
+                <div class="mb-6 flex space-x-4">
+                    <div class="flex-1 search-box">
+                        <input type="text" id="vocabSearch" placeholder="Tìm kiếm từ vựng...">
+                    </div>
+                    <select id="vocabFilter" class="px-4 py-3 border border-gray-300 rounded-8">
+                        <option value="">Tất cả ngôn ngữ</option>
+                        <option value="en">English</option>
+                        <option value="zh">中文</option>
+                    </select>
+                    <select id="vocabSort" class="px-4 py-3 border border-gray-300 rounded-8">
+                        <option value="recent">Gần đây</option>
+                        <option value="alphabetical">Theo bảng chữ cái</option>
+                        <option value="frequency">Tần suất</option>
+                    </select>
+                </div>
+
+                <div id="vocabularyList"></div>
+            </div>
+        </div>
+
+        <!-- Flashcards Tab -->
+        <div id="flashcards" class="tab-content hidden">
+            <div class="card p-8 mb-8">
+                <h2 class="text-2xl font-bold mb-6 text-gray-800">
+                    <i class="fas fa-layer-group text-indigo-500"></i> Ôn tập Flashcard
+                </h2>
+
+                <div id="flashcardContainer" style="display: none;">
+                    <div class="mb-6 flex justify-between items-center">
+                        <div>
+                            <span class="text-lg font-600">Flashcard <span id="cardProgress">1</span> / <span id="cardTotal">0</span></span>
+                            <div class="w-64 h-2 bg-gray-200 rounded-full mt-2">
+                                <div class="progress-bar" id="cardProgressBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <button onclick="resetFlashcard()" class="btn-secondary">
+                            <i class="fas fa-redo"></i> Làm lại
+                        </button>
+                    </div>
+
+                    <div class="mb-8 flex justify-center">
+                        <div class="flashcard" id="currentFlashcard">
+                            <div class="flashcard-inner">
+                                <div class="flashcard-front">
+                                    <div id="cardFront"></div>
+                                </div>
+                                <div class="flashcard-back">
+                                    <div id="cardBack"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-6 text-center">
+                        <p class="text-gray-600 mb-4">Nhấn vào thẻ để lật | Bạn đã thuộc chưa?</p>
+                        <div class="flex space-x-4 justify-center">
+                            <button onclick="markFlashcardResult(false)" class="btn-secondary px-8 py-3">
+                                <i class="fas fa-times-circle"></i> Chưa biết
+                            </button>
+                            <button onclick="markFlashcardResult(true)" class="btn-primary px-8 py-3">
+                                <i class="fas fa-check-circle"></i> Đã biết
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="flashcardStats" class="grid grid-cols-3 gap-4">
+                        <div class="stats-box">
+                            <div id="cardLearned">0</div>
+                            <div class="text-sm opacity-90">Đã biết</div>
+                        </div>
+                        <div class="stats-box">
+                            <div id="cardReview">0</div>
+                            <div class="text-sm opacity-90">Cần ôn</div>
+                        </div>
+                        <div class="stats-box">
+                            <div id="cardRemaining">0</div>
+                            <div class="text-sm opacity-90">Còn lại</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="flashcardEmpty" class="empty-state">
+                    <i class="fas fa-inbox"></i>
+                    <h3 class="text-xl font-600 text-gray-500 mt-4">Không có từ vựng</h3>
+                    <p class="text-gray-400 mt-2">Hãy thêm đoạn văn để bắt đầu học Flashcard</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Tab -->
+        <div id="statistics" class="tab-content hidden">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="stats-box">
+                    <i class="fas fa-book text-4xl mb-3"></i>
+                    <div class="text-3xl font-bold" id="stats-total-words">0</div>
+                    <div class="text-sm opacity-90">Tổng từ vựng</div>
+                </div>
+                <div class="stats-box">
+                    <i class="fas fa-check-double text-4xl mb-3"></i>
+                    <div class="text-3xl font-bold" id="stats-mastered">0</div>
+                    <div class="text-sm opacity-90">Đã thành thạo</div>
+                </div>
+                <div class="stats-box">
+                    <i class="fas fa-sync-alt text-4xl mb-3"></i>
+                    <div class="text-3xl font-bold" id="stats-reviewing">0</div>
+                    <div class="text-sm opacity-90">Đang ôn tập</div>
+                </div>
+                <div class="stats-box">
+                    <i class="fas fa-hourglass-half text-4xl mb-3"></i>
+                    <div class="text-3xl font-bold" id="stats-new">0</div>
+                    <div class="text-sm opacity-90">Mới</div>
+                </div>
+            </div>
+
+            <div class="card p-8">
+                <h2 class="text-2xl font-bold mb-6 text-gray-800">
+                    <i class="fas fa-chart-pie text-blue-500"></i> Tiến độ theo thể loại
+                </h2>
+                <canvas id="progressChart"></canvas>
+            </div>
+
+            <div class="card p-8 mt-8">
+                <h2 class="text-2xl font-bold mb-6 text-gray-800">
+                    <i class="fas fa-globe text-green-500"></i> Từ vựng theo ngôn ngữ
+                </h2>
+                <div class="grid grid-cols-2 gap-6">
+                    <div class="bg-gradient-to-br from-blue-500 to-blue-600 text-white p-6 rounded-8">
+                        <div class="text-4xl font-bold mb-2" id="stats-en-count">0</div>
+                        <div class="text-sm opacity-90">Tiếng Anh</div>
+                    </div>
+                    <div class="bg-gradient-to-br from-red-500 to-red-600 text-white p-6 rounded-8">
+                        <div class="text-4xl font-bold mb-2" id="stats-zh-count">0</div>
+                        <div class="text-sm opacity-90">Tiếng Trung</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card p-8 mt-8">
+                <h2 class="text-2xl font-bold mb-6 text-gray-800">
+                    <i class="fas fa-list-check text-purple-500"></i> Danh sách từ vựng theo trạng thái
+                </h2>
+                <div id="statusList"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Passage Details Modal -->
+    <div id="passageModal" class="modal">
+        <div class="modal-content">
+            <div class="flex justify-between items-start mb-6">
+                <div>
+                    <h2 id="modalTitle" class="text-2xl font-bold text-gray-800 mb-2"></h2>
+                    <p id="modalInfo" class="text-gray-600"></p>
+                </div>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+            <div id="modalContent" class="mb-6"></div>
+            <div class="flex space-x-4">
+                <button onclick="editPassage(currentPassageId)" class="btn-primary flex-1">
+                    <i class="fas fa-edit"></i> Chỉnh sửa
+                </button>
+                <button onclick="deletePassage(currentPassageId)" class="btn-secondary flex-1">
+                    <i class="fas fa-trash"></i> Xóa
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Passage Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800">Chỉnh sửa đoạn văn</h2>
+                <button onclick="closeEditModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+            <div class="mb-6">
+                <label class="block text-sm font-600 text-gray-700 mb-3">Chủ đề:</label>
+                <input type="text" id="editTopic" class="w-full px-4 py-3 border border-gray-300 rounded-8">
+            </div>
+            <div class="mb-6">
+                <label class="block text-sm font-600 text-gray-700 mb-3">Đoạn văn:</label>
+                <textarea id="editPassageText" rows="8" class="w-full px-4 py-3 border border-gray-300 rounded-8"></textarea>
+            </div>
+            <div class="flex space-x-4">
+                <button onclick="saveEditPassage()" class="btn-primary flex-1">
+                    <i class="fas fa-save"></i> Lưu
+                </button>
+                <button onclick="closeEditModal()" class="btn-secondary flex-1">Hủy</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

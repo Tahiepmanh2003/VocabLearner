@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Tải File Mẫu Excel - VocabLearner</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.min.js"></script>
+</head>
+<body>
+    <h1>Tạo File Mẫu Excel cho VocabLearner</h1>
+    <p>Click nút bên dưới để tải file mẫu Excel:</p>
+    <button onclick="downloadSampleExcel()">📥 Tải File Mẫu (vocab_sample.xlsx)</button>
+    
+    <script>
+        function downloadSampleExcel() {
+            // Dữ liệu mẫu - 3 cột: Chữ Hán, Phiên âm, Nghĩa
+            const sampleData = [
+                ['Chữ Hán', 'Phiên âm', 'Nghĩa'],
+                ['技术', 'jìshù', 'Kỹ thuật'],
+                ['制造', 'zhìzào', 'Sản xuất'],
+                ['设备', 'shèbèi', 'Thiết bị'],
+                ['机器人', 'jīqìrén', 'Robot'],
+                ['自动化', 'zìdònghuà', 'Tự động hóa'],
+                ['工厂', 'gōngchǎng', 'Nhà máy'],
+                ['生产线', 'shēngchǎnxiàn', 'Dây chuyền sản xuất'],
+                ['软件', 'ruǎnjiàn', 'Phần mềm'],
+                ['硬件', 'yìngjiàn', 'Phần cứng'],
+                ['算法', 'suànfǎ', 'Thuật toán'],
+                ['数据库', 'shùjùkù', 'Cơ sở dữ liệu'],
+                ['服务器', 'fúwùqì', 'Máy chủ'],
+                ['网络', 'wǎngluò', 'Mạng'],
+                ['安全', 'ānquán', 'Bảo mật'],
+                ['加密', 'jiāmì', 'Mã hóa'],
+                ['云计算', 'yún jìsuàn', 'Điện toán đám mây'],
+                ['质量', 'zhìliàng', 'Chất lượng'],
+                ['效率', 'xiàolǜ', 'Hiệu suất'],
+                ['成本', 'chéngběn', 'Chi phí']
+            ];
+
+            // Tạo workbook
+            const ws = XLSX.utils.aoa_to_sheet(sampleData);
+            
+            // Thiết lập độ rộng cột
+            ws['!cols'] = [
+                { wch: 12 },  // Cột 1: Chữ Hán
+                { wch: 15 },  // Cột 2: Phiên âm
+                { wch: 20 }   // Cột 3: Nghĩa
+            ];
+
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Vocabulary");
+
+            // Tải file
+            XLSX.writeFile(wb, 'vocab_sample.xlsx');
+            
+            alert('✅ File mẫu đã được tải! Tên file: vocab_sample.xlsx');
+        }
+    </script>
+
+    <hr>
+    <h2>Hướng Dẫn:</h2>
+    <ol>
+        <li>Click nút "Tải File Mẫu" để tải file vocab_sample.xlsx</li>
+        <li>Mở file trong Excel hoặc Google Sheets</li>
+        <li>Chỉnh sửa hoặc thêm từ vựng của bạn (giữ nguyên 3 cột)</li>
+        <li>Lưu file</li>
+        <li>Trở lại VocabLearner → Tab "Đoạn văn" → Nhập file</li>
+    </ol>
+
+    <h3>⚠️ Lưu Ý:</h3>
+    <ul>
+        <li>✅ PHẢI có đúng 3 cột: Chữ Hán | Phiên âm | Nghĩa</li>
+        <li>✅ Lưu file dưới định dạng .xlsx hoặc .xls</li>
+        <li>✅ Không xóa tiêu đề (dòng đầu tiên)</li>
+    </ul>
+</body>
+</html>
