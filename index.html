@@ -348,6 +348,10 @@
         .toast.info {
             border-left: 4px solid #2196f3;
         }
+      .hove1:hover {
+            color: #ff9800;
+        }
+
     </style>
 </head>
 <body>
@@ -360,10 +364,31 @@
                     <h1 class="text-3xl font-bold text-gray-800">VocabLearner</h1>
                     <span class="text-gray-500 text-sm">Học từ vựng thông minh</span>
                 </div>
-                <div class="flex items-center space-x-4">
+                <div class="flex items-center gspace-x-4">
                     <div class="stats-box" style="background: white; color: #667eea; padding: 8px 15px; margin: 0;">
                         <i class="fas fa-star"></i> <span id="totalPoints">0</span> điểm
                     </div>
+                   <div class="relative">
+                <img src="./img/person_account.png" alt="User Avatar" class="w-10 h-10 rounded-full border-2 border-gray-300 imgAccount cursor-pointer">
+                        <div id="accountMenu"
+                            class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border z-50">
+                            <ul class="text-sm text-gray-700">
+                                <li class="px-4 py-2 hover:bg-gray-100 cursor-pointer" id="menuProfile">
+                                    👤 Thông tin cá nhân
+                                </li>
+                                <li class="px-4 py-2 hover:bg-gray-100 cursor-pointer" id="menuLogin">
+                                    🔑 Đăng nhập
+                                </li>
+                                <li class="px-4 py-2 hover:bg-gray-100 cursor-pointer" id="menuRegister">
+                                    📝 Đăng ký
+                                </li>
+                                <li class="px-4 py-2 hover:bg-gray-100 cursor-pointer text-red-500 hidden" id="menuLogout">
+                                    🚪 Đăng xuất
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -373,19 +398,19 @@
     <div class="container mx-auto px-4 py-8">
         <!-- Tabs Navigation -->
         <div class="flex space-x-1 mb-8 bg-white rounded-12 p-2 card">
-            <button class="tab-btn flex-1 py-3 px-4 rounded-8 font-600 transition text-center tab-active" data-tab="home">
+            <button class="tab-btn flex-1 py-3 px-4 rounded-8 font-600 transition text-center tab-active hove1" data-tab="home">
                 <i class="fas fa-home"></i> Trang chủ
             </button>
-            <button class="tab-btn flex-1 py-3 px-4 rounded-8 font-600 transition text-center" data-tab="passages">
+            <button class="tab-btn flex-1 py-3 px-4 rounded-8 font-600 transition text-center hove1" data-tab="passages">
                 <i class="fas fa-file-alt"></i> Đoạn văn
             </button>
-            <button class="tab-btn flex-1 py-3 px-4 rounded-8 font-600 transition text-center" data-tab="vocabulary">
+            <button class="tab-btn flex-1 py-3 px-4 rounded-8 font-600 transition text-center hove1" data-tab="vocabulary">
                 <i class="fas fa-list"></i> Từ vựng
             </button>
-            <button class="tab-btn flex-1 py-3 px-4 rounded-8 font-600 transition text-center" data-tab="flashcards">
+            <button class="tab-btn flex-1 py-3 px-4 rounded-8 font-600 transition text-center hove1" data-tab="flashcards">
                 <i class="fas fa-layer-group"></i> Flashcard
             </button>
-            <button class="tab-btn flex-1 py-3 px-4 rounded-8 font-600 transition text-center" data-tab="statistics">
+            <button class="tab-btn flex-1 py-3 px-4 rounded-8 font-600 transition text-center hove1" data-tab="statistics">
                 <i class="fas fa-chart-bar"></i> Thống kê
             </button>
         </div>

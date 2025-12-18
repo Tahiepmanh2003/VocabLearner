@@ -122,6 +122,7 @@ function initApp() {
     renderHome();
     setupEventListeners();
     updateAllStats();
+    userAccount();
 }
 
 // Data Management
@@ -135,6 +136,55 @@ function loadData() {
         }
     }
 }
+function userAccount() {
+    const imgAccount = document.querySelector('.imgAccount');
+    const accountMenu = document.getElementById('accountMenu');
+
+    const menuLogin = document.getElementById('menuLogin');
+    const menuRegister = document.getElementById('menuRegister');
+    const menuProfile = document.getElementById('menuProfile');
+    const menuLogout = document.getElementById('menuLogout');
+
+    // Click avatar -> toggle menu
+    imgAccount.addEventListener('click', function (e) {
+        e.stopPropagation();
+        accountMenu.classList.toggle('hidden');
+        updateMenuByAuth();
+    });
+
+    // Click ra ngoài -> đóng menu
+    document.addEventListener('click', function () {
+        accountMenu.classList.add('hidden');
+    });
+
+    // Menu actions
+    menuLogin.onclick = () => window.location.href = 'loginAccount.html';
+    menuRegister.onclick = () => window.location.href = 'registerAccount.html';
+    menuProfile.onclick = () => window.location.href = 'profile.html';
+
+    menuLogout.onclick = () => {
+        localStorage.removeItem('user');
+        alert('Đã đăng xuất');
+        updateMenuByAuth();
+    };
+
+    function updateMenuByAuth() {
+        const user = JSON.parse(localStorage.getItem('user'));
+
+        if (user) {
+            menuLogin.classList.add('hidden');
+            menuRegister.classList.add('hidden');
+            menuProfile.classList.remove('hidden');
+            menuLogout.classList.remove('hidden');
+        } else {
+            menuLogin.classList.remove('hidden');
+            menuRegister.classList.remove('hidden');
+            menuProfile.classList.add('hidden');
+            menuLogout.classList.add('hidden');
+        }
+    }
+}
+
 
 function saveData() {
     localStorage.setItem('vocabLearnerData', JSON.stringify(appData));

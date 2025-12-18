@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profile | VocabLearner</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+        margin: 0;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .profile-card {
+        background: #fff;
+        width: 100%;
+        max-width: 700px;
+        padding: 30px;
+        border-radius: 18px;
+        box-shadow: 0 25px 45px rgba(0,0,0,0.2);
+        animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .profile-header {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 20px;
+    }
+
+    .avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        border: 3px solid #667eea;
+        object-fit: cover;
+    }
+
+    .profile-header h2 {
+        margin: 0;
+        color: #333;
+    }
+
+    .profile-header p {
+        margin: 5px 0 0;
+        color: #777;
+        font-size: 14px;
+    }
+
+    .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        margin: 25px 0;
+    }
+
+    .stat-box {
+        background: #f7f8ff;
+        border-radius: 14px;
+        padding: 15px;
+        text-align: center;
+    }
+
+    .stat-box h3 {
+        margin: 0;
+        font-size: 22px;
+        color: #667eea;
+    }
+
+    .stat-box span {
+        font-size: 13px;
+        color: #666;
+    }
+
+    .vocab-section h3 {
+        margin-bottom: 10px;
+        color: #333;
+    }
+
+    .vocab-list {
+        max-height: 220px;
+        overflow-y: auto;
+        padding-right: 5px;
+    }
+
+    .vocab-item {
+        padding: 10px 12px;
+        border-radius: 10px;
+        background: #f9f9f9;
+        margin-bottom: 8px;
+        font-size: 14px;
+    }
+
+    .vocab-item strong {
+        color: #333;
+    }
+
+    .back-btn {
+        margin-top: 20px;
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: #fff;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .back-btn:hover {
+        opacity: 0.9;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="profile-card">
+    <div class="profile-header">
+        <img src="./img/person_account.png" class="avatar" alt="Avatar">
+        <div>
+            <h2 id="username"></h2>
+            <p id="email"></p>
+        </div>
+    </div>
+
+    <div class="stats">
+        <div class="stat-box">
+            <h3 id="totalPoints">0</h3>
+            <span>Total Points</span>
+        </div>
+        <div class="stat-box">
+            <h3 id="streak">0</h3>
+            <span>Streak (days)</span>
+        </div>
+        <div class="stat-box">
+            <h3 id="lastStudy">-</h3>
+            <span>Last Study</span>
+        </div>
+    </div>
+
+    <div class="vocab-section">
+        <h3>Learned Vocabulary</h3>
+        <div class="vocab-list" id="vocabList"></div>
+    </div>
+
+    <button class="back-btn" onclick="window.location.href='index.html'">
+        ← Back to Home
+    </button>
+</div>
+
+<script>
+const user = JSON.parse(localStorage.getItem('user'));
+
+if (!user) {
+    alert('Vui lòng đăng nhập');
+    window.location.href = 'loginAccount.html';
+}
+
+// Hiển thị thông tin user
+document.getElementById('username').textContent = user.username;
+document.getElementById('email').textContent = user.email || '';
+
+// Lấy data học tập (nếu có)
+const data = JSON.parse(localStorage.getItem('vocabLearnerData')) || {
+    stats: { totalPoints: 0, streak: 0, lastStudyDate: '-' },
+    vocabulary: [],
+    userProgress: {}
+};
+
+document.getElementById('totalPoints').textContent = data.stats.totalPoints || 0;
+document.getElementById('streak').textContent = data.stats.streak || 0;
+document.getElementById('lastStudy').textContent = data.stats.lastStudyDate || '-';
+
+// Vocabulary
+const vocabList = document.getElementById('vocabList');
+const learnedVocabulary = data.vocabulary.filter(
+    v => data.userProgress[v.id]?.learned
+);
+
+if (learnedVocabulary.length === 0) {
+    vocabList.innerHTML = '<p style="color:#777">No vocabulary learned yet.</p>';
+} else {
+    learnedVocabulary.forEach(v => {
+        const div = document.createElement('div');
+        div.className = 'vocab-item';
+        div.innerHTML = `
+            <strong>${v.word}</strong> - ${v.meaning}
+            <span style="color:#777"> (${v.language})</span>
+        `;
+        vocabList.appendChild(div);
+    });
+}
+</script>
+
+
+</body>
+</html>
