@@ -3,22 +3,22 @@
 ![VocabLearner](https://img.shields.io/badge/VocabLearner-1.0.0-blue)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
-## 📚 Giới thiệu
+## Giới thiệu
 
 **VocabLearner** là một ứng dụng web hiện đại và thân thiện để học và ghi nhớ từ vựng tiếng Anh và tiếng Trung (với phiên âm Pinyin). Ứng dụng được thiết kế đặc biệt cho các từ vựng liên quan đến **công nghệ** và **sản xuất**.
 
 ### Tính năng chính:
 
-✅ **Nhập đoạn văn thông minh** - Hỗ trợ tiếng Anh và tiếng Trung (có phiên âm)
-✅ **Trích xuất từ vựng tự động** - Hệ thống tự động phân tích và trích xuất từ vựng
-✅ **Dịch nghĩa** - Tích hợp từ điển công nghệ và sản xuất
-✅ **Flashcard tương tác** - Học từng từ qua thẻ lật 3D
-✅ **Theo dõi tiến độ** - Thống kê chi tiết về tiến độ học tập
-✅ **Quản lý từ vựng** - Sắp xếp, tìm kiếm, xóa từ
-✅ **Giao diện đẹp** - Thiết kế hiện đại với gradient và animation
-✅ **Lưu trữ cục bộ** - Dữ liệu lưu trữ trong trình duyệt (không cần server)
+**Nhập đoạn văn thông minh** - Hỗ trợ tiếng Anh và tiếng Trung (có phiên âm)
+**Trích xuất từ vựng tự động** - Hệ thống tự động phân tích và trích xuất từ vựng
+**Dịch nghĩa** - Tích hợp từ điển công nghệ và sản xuất
+**Flashcard tương tác** - Học từng từ qua thẻ lật 3D
+**Theo dõi tiến độ** - Thống kê chi tiết về tiến độ học tập
+**Quản lý từ vựng** - Sắp xếp, tìm kiếm, xóa từ
+**Giao diện đẹp** - Thiết kế hiện đại với gradient và animation
+**Lưu trữ cục bộ** - Dữ liệu lưu trữ trong trình duyệt (không cần server)
 
-## 🚀 Cài đặt & Sử dụng
+## Cài đặt & Sử dụng
 
 ### Phương pháp 1: Mở trực tiếp (Đơn giản nhất)
 
@@ -60,7 +60,7 @@ npm install
 npm start
 ```
 
-## 📖 Hướng dẫn sử dụng
+## Hướng dẫn sử dụng
 
 ### 1️⃣ Thêm Đoạn Văn
 
@@ -106,7 +106,7 @@ Modern manufacturing uses advanced technology and automation systems.
 - Xem danh sách từ theo trạng thái
 - Theo dõi tiến độ học tập
 
-## 🎨 Giao Diện
+## Giao Diện
 
 ### Màu sắc & Thiết kế
 
@@ -116,14 +116,14 @@ Modern manufacturing uses advanced technology and automation systems.
 - **Flashcard 3D**: Lật mượt mà với perspective
 - **Responsive**: Tương thích mobile, tablet, desktop
 
-## 💾 Lưu Trữ Dữ Liệu
+## Lưu Trữ Dữ Liệu
 
 Tất cả dữ liệu được lưu trong **LocalStorage** của trình duyệt:
 - Không cần database
 - Dữ liệu an toàn trên máy của bạn
 - Có thể xuất/nhập dữ liệu (sẽ thêm feature sau)
 
-## 📋 Cấu Trúc File
+## Cấu Trúc File
 
 ```
 weblearn/
@@ -133,7 +133,7 @@ weblearn/
 └── server.js           # Server Express (tùy chọn)
 ```
 
-## 🔧 Tính năng Nâng cao
+## Tính năng Nâng cao
 
 ### Từ Điển Tích Hợp
 
@@ -151,9 +151,9 @@ weblearn/
 
 ### Mức Độ Khó
 
-- 🟢 **Dễ (Beginner)** - Từ cơ bản, phổ biến
-- 🟡 **Trung bình (Intermediate)** - Từ chuyên môn
-- 🔴 **Khó (Advanced)** - Từ chuyên sâu, hiếm
+- **Dễ (Beginner)** - Từ cơ bản, phổ biến
+- **Trung bình (Intermediate)** - Từ chuyên môn
+- **Khó (Advanced)** - Từ chuyên sâu, hiếm
 
 ### Thống Kê & Điểm
 
@@ -162,7 +162,7 @@ weblearn/
 - Tính streak (chuỗi học liên tục)
 - Thống kê theo ngôn ngữ, chủ đề, mức độ
 
-## 🎯 Mẹo Học Hiệu Quả
+## Mẹo Học Hiệu Quả
 
 1. **Đoạn văn ngắn gọn** - Chọn đoạn 2-3 câu cho dễ nhớ
 2. **Một chủ đề tại một lần** - Tập trung vào từ vựng liên quan
@@ -170,13 +170,13 @@ weblearn/
 4. **Viết lại** - Tạo câu của riêng bạn từ các từ vựng mới
 5. **Hạn chế** - Học max 10-15 từ/ngày để hiệu quả
 
-## 🌍 Hỗ Trợ Ngôn Ngữ
+## Hỗ Trợ Ngôn Ngữ
 
-- ✅ Tiếng Anh (English)
-- ✅ Tiếng Trung Giản Thể (Simplified Chinese) + Pinyin
-- ✅ Tiếng Việt (Giao diện)
+- Tiếng Anh (English)
+- Tiếng Trung Giản Thể (Simplified Chinese) + Pinyin
+- Tiếng Việt (Giao diện)
 
-## 🔐 Bảo Mật & Quyền Riêng Tư
+## Bảo Mật & Quyền Riêng Tư
 
 - Không thu thập dữ liệu cá nhân
 - Không có tracking hoặc analytics
@@ -185,34 +185,34 @@ weblearn/
 
 ## 📱 Tương Thích
 
-- ✅ Chrome/Chromium (v90+)
-- ✅ Firefox (v88+)
-- ✅ Safari (v14+)
-- ✅ Edge (v90+)
-- ✅ Mobile browsers
+- Chrome/Chromium (v90+)
+- Firefox (v88+)
+- Safari (v14+)
+- Edge (v90+)
+- Mobile browsers
 
-## 🚧 Tính Năng Sắp Tới
+## Tính Năng Sắp Tới
 
-- 📤 Xuất/Nhập dữ liệu (CSV, JSON)
-- 🤖 AI dịch thuật tự động
-- 📊 Biểu đồ tiến độ chi tiết
-- 🔊 Phát âm tự động
-- 🎯 Bài kiểm tra định kỳ
-- ☁️ Đồng bộ cloud (tuỳ chọn)
-- 🌙 Dark mode
+- Xuất/Nhập dữ liệu (CSV, JSON)
+- AI dịch thuật tự động
+- Biểu đồ tiến độ chi tiết
+- Phát âm tự động
+- Bài kiểm tra định kỳ
+- Đồng bộ cloud (tuỳ chọn)
+- Dark mode
 
-## 💡 Tìm Lỗi & Đóng Góp
+## Tìm Lỗi & Đóng Góp
 
 Nếu tìm thấy lỗi hoặc có đề nghị, vui lòng:
 1. Kiểm tra console browser (F12)
 2. Thử xóa localStorage: `localStorage.clear()`
 3. Tải lại trang (Ctrl+Shift+R)
 
-## 📄 Giấy Phép
+## Giấy Phép
 
 MIT License - Tự do sử dụng, sửa đổi, phân phối
 
-## 👨‍💻 Phát Triển
+## Phát Triển
 
 **Công Nghệ:**
 - HTML5 + CSS3 + Vanilla JavaScript
@@ -225,12 +225,14 @@ MIT License - Tự do sử dụng, sửa đổi, phân phối
 - Backend server (tuỳ chọn)
 - Framework nặng
 
-## 📞 Liên Hệ & Hỗ Trợ
+## Liên Hệ & Hỗ Trợ
 
 Vấn đề? Muốn cải thiện? Liên hệ tác giả!
-
+name: Ta Hiep Manh
+contact: mightydev203@gmail.com
+sdt: 0389961005
 ---
 
-**Chúc bạn học tập vui vẻ! 🎓**
+**Chúc bạn học tập vui vẻ! **
 
-*VocabLearner - Học từ vựng, dễ như chơi* ✨
+*VocabLearner - Học từ vựng, dễ như chơi* 
