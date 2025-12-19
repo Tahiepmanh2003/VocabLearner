@@ -265,16 +265,56 @@ function setupEventListeners() {
         });
     });
 
-    // Search functionality
-    document.getElementById('passageSearch')?.addEventListener('input', filterPassages);
-    document.getElementById('vocabSearch')?.addEventListener('input', filterVocabulary);
+    // Passage search
+    document.getElementById('passageSearch')
+        ?.addEventListener('input', filterPassages);
 
-    // Passage input event
-    document.getElementById('passageInput')?.addEventListener('input', (e) => {
-        const length = e.target.value.length;
-        console.log(`Passage length: ${length} characters`);
+    // Vocabulary filters
+    document.getElementById('vocabSearch')
+        ?.addEventListener('input', renderVocabulary);
+
+    document.getElementById('vocabFilter')
+        ?.addEventListener('change', renderVocabulary);
+
+    document.getElementById('vocabSort')
+        ?.addEventListener('change', renderVocabulary);
+
+    // Scroll to top button
+    const scrollBtn = document.getElementById('scrollToTop');
+
+    if (scrollBtn) {
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 500) {
+                scrollBtn.classList.add('show');
+            } else {
+                scrollBtn.classList.remove('show');
+            }
+        });
+
+        scrollBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    }
+    
+document.querySelector('.home-trigger')?.addEventListener('click', () => {
+    switchTab('home');
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
     });
+});
+
+    // Passage input
+    document.getElementById('passageInput')
+        ?.addEventListener('input', (e) => {
+            console.log(`Passage length: ${e.target.value.length} characters`);
+        });
 }
+
+
 
 // ============================================
 // PASSAGE MANAGEMENT
@@ -663,37 +703,50 @@ function parseDocxTable(text) {
 
 function renderVocabulary() {
     const container = document.getElementById('vocabularyList');
+
+    const query = document.getElementById('vocabSearch')?.value.toLowerCase() || '';
     const filter = document.getElementById('vocabFilter')?.value || '';
     const sort = document.getElementById('vocabSort')?.value || 'recent';
 
-    let vocab = appData.vocabulary;
+    let vocab = [...appData.vocabulary];
 
+    // 🔍 Search
+    if (query) {
+        vocab = vocab.filter(v =>
+            v.word.toLowerCase().includes(query) ||
+            (v.meaning && v.meaning.toLowerCase().includes(query))
+        );
+    }
+
+    // 🌐 Language filter
     if (filter) {
         vocab = vocab.filter(v => v.language === filter);
     }
 
-    // Sort
+    // 🔃 Sort
     if (sort === 'alphabetical') {
         vocab.sort((a, b) => a.word.localeCompare(b.word));
     } else if (sort === 'frequency') {
-        vocab.sort((a, b) => b.frequency - a.frequency);
+        vocab.sort((a, b) => (b.frequency || 0) - (a.frequency || 0));
     } else {
         vocab.sort((a, b) => new Date(b.dateAdded) - new Date(a.dateAdded));
     }
 
+    // ❌ Empty
     if (vocab.length === 0) {
         container.innerHTML = `
             <div class="empty-state">
-                <i class="fas fa-inbox"></i>
-                <h3 class="text-xl font-600 text-gray-500 mt-4">Chưa có từ vựng</h3>
-                <p class="text-gray-400 mt-2">Hãy thêm đoạn văn để trích xuất từ vựng</p>
+                <i class="fas fa-search"></i>
+                <p class="text-gray-400 mt-2">Không tìm thấy từ vựng nào</p>
             </div>
         `;
         return;
     }
 
+    // ✅ Render
     container.innerHTML = vocab.map(v => {
         const progress = appData.userProgress[v.id] || { learned: false, reviewCount: 0 };
+
         return `
             <div class="vocabulary-item">
                 <div class="flex justify-between items-start mb-2">
@@ -704,15 +757,24 @@ function renderVocabulary() {
                             </span>
                             ${progress.learned ? '<span class="text-green-500 ml-2"><i class="fas fa-check-circle"></i> Đã học</span>' : ''}
                         </div>
+
                         <h3 class="text-xl font-600 text-gray-800">${v.word}</h3>
-                        ${v.pinyin ? `<div class="pinyin-box"><i class="fas fa-volume-up mr-2"></i>Pinyin: ${v.pinyin}</div>` : ''}
-                        ${v.meaning ? `<div class="meaning-box"><i class="fas fa-arrow-right mr-2"></i>${v.meaning}</div>` : '<div class="meaning-box text-gray-400"><i class="fas fa-spinner fa-spin mr-2"></i>Đang tải dịch...</div>'}
+
+                        ${v.pinyin ? `<div class="pinyin-box"><i class="fas fa-volume-up mr-2"></i>${v.pinyin}</div>` : ''}
+
+                        ${v.meaning
+                            ? `<div class="meaning-box"><i class="fas fa-arrow-right mr-2"></i>${v.meaning}</div>`
+                            : `<div class="meaning-box text-gray-400"><i class="fas fa-spinner fa-spin mr-2"></i>Đang tải dịch...</div>`
+                        }
+
                         ${v.category ? `<p class="text-xs text-gray-500 mt-2"><i class="fas fa-tag"></i> ${v.category}</p>` : ''}
                     </div>
+
                     <button onclick="deleteVocab('${v.id}')" class="text-red-500 hover:text-red-700 ml-4">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>
+
                 <div class="flex justify-between items-center pt-3 border-t text-xs text-gray-500">
                     <span><i class="fas fa-redo"></i> ${progress.reviewCount} lần ôn</span>
                     <span class="difficulty-${v.difficulty}">${getDifficultyLabel(v.difficulty)}</span>
@@ -722,6 +784,7 @@ function renderVocabulary() {
         `;
     }).join('');
 }
+
 
 function deleteVocab(vocabId) {
     if (confirm('Bạn có chắc muốn xóa từ vựng này?')) {
