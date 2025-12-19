@@ -414,25 +414,59 @@
     justify-content: center;
     align-items: center;
     gap: 20px;
+    padding-left: 20px;
 }
-.footer2{
+.footer3{
     text-align: center;
     color: white;
     font-size: 14px;
     background:#000D54;
 }
 .address{
-    display: flex;
     align-items: center;
     gap: 4px;
-    justify-content: left;
-
 }
 .phone{
-    display: flex;
     align-items: center;
     gap: 4px;
-    justify-content: left;
     margin-top: 8px;
-    
+    margin-right: 93px;
+}
+.email{
+    align-items: center;
+    gap: 4px;
+    margin-top: 8px;
+ 
+}
+.contact-info li{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.contact-info .imgaddress{
+   margin-right: 8px;
+}
+.contact-info .imgphone{
+   margin-right: 8px;
+}
+.contact-info .imgemail{
+   margin-right: 2px;
+}
+.email img{
+    width: 30px;
+    height: 30px;
+}
+.footer2{
+    text-align: center;
+    color: white;
+    margin-top: 10px;
+    margin-bottom: 55px;
+}
+.footer2 ul{
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+.wrap1{
+   padding-left: 20px;
 }

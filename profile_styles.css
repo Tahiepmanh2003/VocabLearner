@@ -118,3 +118,8 @@
     .back-btn:hover {
         opacity: 0.9;
     }
+    .profile-title{
+        text-align: center;
+        margin: 10px;
+        color: blue;
+    }
