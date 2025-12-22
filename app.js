@@ -2,7 +2,6 @@
 // VocabLearner - Application Logic
 // ============================================
 
-// Data Structure
 let appData = {
     passages: [],
     vocabulary: [],
@@ -67,12 +66,9 @@ const TECH_VOCABULARY = {
     }
 };
 
-// Translation API function - Enhanced
 async function translateWord(word, sourceLanguage) {
     try {
-        // For Chinese, use better API (RapidAPI or LibreTranslate)
         if (sourceLanguage === 'zh') {
-            // Try LibreTranslate (free, no key required)
             const response = await fetch(
                 'https://libretranslate.de/translate',
                 {
@@ -93,7 +89,6 @@ async function translateWord(word, sourceLanguage) {
                 }
             }
         } else if (sourceLanguage === 'en') {
-            // For English, use MyMemory API
             const response = await fetch(
                 `https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=en|vi`,
                 { method: 'GET' }
@@ -126,7 +121,6 @@ function initApp() {
     helloUser();
 }
 
-// Data Management
 function loadData() {
     const saved = localStorage.getItem('vocabLearnerData');
     if (saved) {
@@ -146,19 +140,18 @@ function userAccount() {
     const menuProfile = document.getElementById('menuProfile');
     const menuLogout = document.getElementById('menuLogout');
 
-    // Click avatar -> toggle menu
+    
     imgAccount.addEventListener('click', function (e) {
         e.stopPropagation();
         accountMenu.classList.toggle('hidden');
         updateMenuByAuth();
     });
 
-    // Click ra ngoài -> đóng menu
+    // 
     document.addEventListener('click', function () {
         accountMenu.classList.add('hidden');
     });
 
-    // Menu actions
     menuLogin.onclick = () => window.location.href = 'loginAccount.html';
     menuRegister.onclick = () => window.location.href = 'registerAccount.html';
     menuProfile.onclick = () => window.location.href = 'profile.html';
@@ -199,34 +192,28 @@ function saveData() {
     showToast('Dữ liệu đã được lưu', 'success');
 }
 
-// UI Helpers
 function switchTab(tabName) {
-    // Hide all tabs
     document.querySelectorAll('.tab-content').forEach(tab => {
         tab.classList.add('hidden');
     });
 
-    // Remove active class from all buttons
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.classList.remove('tab-active', 'text-purple-700');
         btn.classList.add('text-gray-700');
     });
 
-    // Show selected tab
     const tabElement = document.getElementById(tabName);
     if (tabElement) {
         tabElement.classList.remove('hidden');
         tabElement.classList.add('fade-in');
     }
 
-    // Mark button as active
     const activeBtn = document.querySelector(`[data-tab="${tabName}"]`);
     if (activeBtn) {
         activeBtn.classList.add('tab-active', 'text-purple-700');
         activeBtn.classList.remove('text-gray-700');
     }
 
-    // Render content based on tab
     switch(tabName) {
         case 'home':
             renderHome();
@@ -258,18 +245,15 @@ function renderHome() {
 }
 
 function setupEventListeners() {
-    // Tab navigation
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             switchTab(e.currentTarget.dataset.tab);
         });
     });
 
-    // Passage search
     document.getElementById('passageSearch')
         ?.addEventListener('input', filterPassages);
 
-    // Vocabulary filters
     document.getElementById('vocabSearch')
         ?.addEventListener('input', renderVocabulary);
 
@@ -279,7 +263,6 @@ function setupEventListeners() {
     document.getElementById('vocabSort')
         ?.addEventListener('change', renderVocabulary);
 
-    // Scroll to top button
     const scrollBtn = document.getElementById('scrollToTop');
 
     if (scrollBtn) {
@@ -307,7 +290,6 @@ document.querySelector('.home-trigger')?.addEventListener('click', () => {
     });
 });
 
-    // Passage input
     document.getElementById('passageInput')
         ?.addEventListener('input', (e) => {
             console.log(`Passage length: ${e.target.value.length} characters`);
@@ -346,7 +328,6 @@ function addPassage() {
     saveData();
     showToast('Đoạn văn đã được thêm thành công!', 'success');
 
-    // Reset form
     document.getElementById('passageInput').value = '';
     document.getElementById('topicInput').value = '';
 
@@ -361,7 +342,6 @@ function extractVocabulary(passage) {
     words.forEach(async word => {
         const normalized = word.toLowerCase();
         
-        // Check if word already exists
         const exists = appData.vocabulary.some(v => 
             v.word.toLowerCase() === normalized && v.language === passage.language
         );
@@ -375,7 +355,6 @@ function extractVocabulary(passage) {
                 meaning = TECH_VOCABULARY.zh[normalized]?.meaning || '';
             }
 
-            // If no meaning found in dictionary, try to translate
             if (!meaning) {
                 const translated = await translateWord(word, passage.language);
                 meaning = translated || 'Cần dịch...';
@@ -401,10 +380,8 @@ function extractVocabulary(passage) {
                 reviewCount: 0,
             };
             
-            // Save and update UI
             saveData();
             
-            // Update UI if currently viewing vocabulary tab
             const vocabTab = document.getElementById('vocabulary');
             if (vocabTab && !vocabTab.classList.contains('hidden')) {
                 renderVocabulary();
@@ -413,7 +390,6 @@ function extractVocabulary(passage) {
 
         processedCount++;
         if (processedCount === totalWords) {
-            // Final update after all words are processed
             const vocabTab = document.getElementById('vocabulary');
             if (vocabTab && !vocabTab.classList.contains('hidden')) {
                 renderVocabulary();
@@ -589,23 +565,18 @@ async function importVocabularyFromFile() {
 
     try {
         if (fileName.endsWith('.docx')) {
-            // Handle DOCX file using Mammoth.js
             const arrayBuffer = await file.arrayBuffer();
             const result = await mammoth.extractRawText({ arrayBuffer: arrayBuffer });
-            
-            // Parse table from text - simplified approach
+
             data = parseDocxTable(result.value);
         } else if (fileName.endsWith('.xlsx') || fileName.endsWith('.xls')) {
-            // Handle Excel file using SheetJS (XLSX library)
             const arrayBuffer = await file.arrayBuffer();
-            // Convert to typed array
             const uint8View = new Uint8Array(arrayBuffer);
             const workbook = window.XLSX.read(uint8View, { type: 'array' });
             const firstSheetName = workbook.SheetNames[0];
             const worksheet = workbook.Sheets[firstSheetName];
             const rawData = window.XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-            
-            // Filter out empty rows and headers
+
             data = rawData
                 .filter(row => row.length >= 3 && row[0] && row[0].toString().trim())
                 .map(row => ({
@@ -623,14 +594,12 @@ async function importVocabularyFromFile() {
             return;
         }
 
-        // Add vocabulary items
         let addedCount = 0;
         for (const item of data) {
             const hanzi = item.hanzi || item[0];
             const pinyin = item.pinyin || item[1];
             const meaning = item.meaning || item[2];
 
-            // Check if word already exists
             const exists = appData.vocabulary.some(v => v.word === hanzi);
 
             if (!exists && hanzi) {
@@ -659,7 +628,7 @@ async function importVocabularyFromFile() {
         }
 
         saveData();
-        fileInput.value = ''; // Clear file input
+        fileInput.value = ''; 
         renderVocabulary();
         showToast(`✅ Đã thêm ${addedCount} từ vựng từ file!`, 'success');
     } catch (error) {
@@ -668,17 +637,13 @@ async function importVocabularyFromFile() {
     }
 }
 
-// Parse DOCX table - simplified version
 function parseDocxTable(text) {
     const lines = text.split('\n').filter(line => line.trim());
     const data = [];
 
-    // Simple line-by-line parsing
-    // Assumes format: 汉字\t拼音\t意思 or similar
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i].trim();
         
-        // Try to split by tabs or multiple spaces
         let parts = line.split(/\t+/).filter(p => p.trim());
         
         if (parts.length < 3) {
@@ -710,7 +675,6 @@ function renderVocabulary() {
 
     let vocab = [...appData.vocabulary];
 
-    // 🔍 Search
     if (query) {
         vocab = vocab.filter(v =>
             v.word.toLowerCase().includes(query) ||
@@ -718,12 +682,10 @@ function renderVocabulary() {
         );
     }
 
-    // 🌐 Language filter
     if (filter) {
         vocab = vocab.filter(v => v.language === filter);
     }
 
-    // 🔃 Sort
     if (sort === 'alphabetical') {
         vocab.sort((a, b) => a.word.localeCompare(b.word));
     } else if (sort === 'frequency') {
@@ -732,7 +694,6 @@ function renderVocabulary() {
         vocab.sort((a, b) => new Date(b.dateAdded) - new Date(a.dateAdded));
     }
 
-    // ❌ Empty
     if (vocab.length === 0) {
         container.innerHTML = `
             <div class="empty-state">
@@ -743,7 +704,6 @@ function renderVocabulary() {
         return;
     }
 
-    // ✅ Render
     container.innerHTML = vocab.map(v => {
         const progress = appData.userProgress[v.id] || { learned: false, reviewCount: 0 };
 
@@ -808,7 +768,6 @@ function filterVocabulary() {
         return matchesQuery && matchesFilter;
     });
 
-    // Sort
     if (sort === 'alphabetical') {
         vocab.sort((a, b) => a.word.localeCompare(b.word));
     } else if (sort === 'frequency') {
@@ -887,7 +846,6 @@ function displayFlashcard() {
     const card = currentFlashcards[currentFlashcardIndex];
     const cardElement = document.getElementById('currentFlashcard');
 
-    // Reset flip state
     cardElement.classList.remove('flipped');
 
     document.getElementById('cardFront').innerHTML = `
@@ -906,12 +864,10 @@ function displayFlashcard() {
         </div>
     `;
 
-    // Add click to flip
     cardElement.onclick = () => {
         cardElement.classList.toggle('flipped');
     };
 
-    // Update progress
     document.getElementById('cardProgress').textContent = currentFlashcardIndex + 1;
     document.getElementById('cardTotal').textContent = currentFlashcards.length;
     
@@ -940,7 +896,6 @@ function markFlashcardResult(learned) {
     appData.userProgress[card.id] = progress;
     saveData();
 
-    // Move to next card
     currentFlashcardIndex++;
     if (currentFlashcardIndex >= currentFlashcards.length) {
         showToast('Hoàn thành! Bạn đã ôn tập hết các từ vựng', 'success');
@@ -991,14 +946,12 @@ function renderStatistics() {
     document.getElementById('stats-reviewing').textContent = reviewing;
     document.getElementById('stats-new').textContent = newWords;
 
-    // Language stats
     const enCount = appData.vocabulary.filter(v => v.language === 'en').length;
     const zhCount = appData.vocabulary.filter(v => v.language === 'zh').length;
 
     document.getElementById('stats-en-count').textContent = enCount;
     document.getElementById('stats-zh-count').textContent = zhCount;
 
-    // Status list
     const statusContainer = document.getElementById('statusList');
     statusContainer.innerHTML = `
         <div class="grid grid-cols-3 gap-4">
@@ -1076,8 +1029,6 @@ function showToast(message, type = 'info') {
     }, 2000);
 }
 
-// Variables for modal management
 let currentPassageId = null;
 
-// Initialize on page load
 document.addEventListener('DOMContentLoaded', initApp);
